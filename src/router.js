@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import BookList from './pages/book/List.vue'
-import BookDetail from './pages/book/Detail.vue'
-import BookIndex from './pages/book/index.vue'
+import BookList from './pages/book/List'
+import BookDetail from './pages/book/Detail'
+import BookIndex from './pages/book/Index'
 import SchoolList from './pages/school/List'
 import SchoolDetail from './pages/school/Detail'
-import SchoolIndex from './pages/school/index'
+import SchoolIndex from './pages/school/Index'
 import SocietylList from './pages/society/List'
 import SocietyDetail from './pages/society/Detail'
-import SocietyIndex from './pages/society/index'
+import SocietyIndex from './pages/society/Index'
 Vue.use(Router)
 
 export function createRouter () {
