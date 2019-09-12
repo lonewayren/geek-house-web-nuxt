@@ -82,10 +82,6 @@ module.exports = {
   */
   generate: {
     routes: [
-      '/book/detail/1',
-      '/book/detail/2',
-      '/book/detail/3',
-      '/book/detail/4'
     ]
   },
   build: {

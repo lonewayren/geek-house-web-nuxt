@@ -45,7 +45,7 @@ export default function ({ $axios, redirect, route }) {
     }
     switch (error.code) {
       case 40001: {
-        redirect(route.path)
+        redirect({ name: '图书详情' })
         break
       }
     }
