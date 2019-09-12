@@ -1,7 +1,7 @@
 const path = require('path')
 const pkg = require('./package')
 const webpack = require('webpack')
-const api = 'http://127.0.0.1:8000'
+const api = 'http://127.0.0.1:8080'
 
 module.exports = {
   mode: 'universal',
