@@ -1,6 +1,7 @@
 const path = require('path')
 const pkg = require('./package')
 const webpack = require('webpack')
+const api = 'http://127.0.0.1:8000'
 
 module.exports = {
   mode: 'universal',
@@ -67,13 +68,13 @@ module.exports = {
   },
   proxy: {
     '/api': {
-      target: 'http://101.236.57.232'
+      target: api
     },
     '/favicon.ico': {
-      target: 'http://101.236.57.232'
+      target: api
     },
     '/static': {
-      target: 'http://101.236.57.232'
+      target: api
     },
   },
   /*
