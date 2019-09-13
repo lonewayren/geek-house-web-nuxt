@@ -9,10 +9,18 @@
         @click="switchMenu"
         class="header-menu"
       >
-        <a-menu-item key="book"><a-icon type="book" />书籍</a-menu-item>
-        <!--            <a-menu-item key="blog"> <a-icon type="edit" />博客</a-menu-item>-->
-        <a-menu-item key="school"><a-icon type="bank" />校招</a-menu-item>
-        <a-menu-item key="society"><a-icon type="team" />社招</a-menu-item>
+        <a-menu-item key="book">
+          <icon-font title="icon-ebook" type="icon-ebook" style="font-size: 20px"></icon-font>
+          书籍
+        </a-menu-item>
+        <a-menu-item key="school">
+          <icon-font title="icon-school" type="icon-school" style="font-size: 20px"></icon-font>
+          校招
+        </a-menu-item>
+        <a-menu-item key="society">
+          <icon-font title="icon-society" type="icon-society" style="font-size: 20px"></icon-font>
+          社招
+        </a-menu-item>
       </a-menu>
     </a-layout-header>
   </a-layout>
