@@ -76,6 +76,9 @@ module.exports = {
     '/static': {
       target: api
     },
+    '/sitemap.xml': {
+      target: api
+    }
   },
   /*
   ** Build configuration
