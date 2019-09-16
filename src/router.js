@@ -26,6 +26,14 @@ export function createRouter () {
         redirect: '/book'
       },
       {
+        path: '/html/book/:id',
+        name: '图书',
+        meta: {
+          title: '图书列表-极客学舍'
+        },
+        redirect: '/book/detail/:id'
+      },
+      {
         path: '/book',
         name: '图书',
         meta: {
