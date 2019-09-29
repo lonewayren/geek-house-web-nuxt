@@ -27,11 +27,11 @@ export function createRouter () {
       },
       {
         path: '/html/book/:id',
-        name: '图书',
+        name: '图书详情',
         meta: {
-          title: '图书列表-极客学舍'
+          title: '图书详情-极客学舍'
         },
-        redirect: '/book/detail/:id'
+        component: BookDetail
       },
       {
         path: '/book',
