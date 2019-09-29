@@ -26,14 +26,6 @@ export function createRouter () {
         redirect: '/book'
       },
       {
-        path: '/html/book/:id',
-        name: '图书详情',
-        meta: {
-          title: '图书详情-极客学舍'
-        },
-        component: BookDetail
-      },
-      {
         path: '/book',
         name: '图书',
         meta: {
@@ -59,6 +51,14 @@ export function createRouter () {
             component: BookDetail
           }
         ]
+      },
+      {
+        path: '/html/book/:id',
+        name: '图书详情',
+        meta: {
+          title: '图书详情-极客学舍'
+        },
+        component: BookDetail
       },
       {
         path: '/school',
