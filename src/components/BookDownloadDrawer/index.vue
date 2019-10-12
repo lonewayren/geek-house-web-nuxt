@@ -15,45 +15,56 @@
       </template>
       <div>
         <div v-if="links.length">
-          <a-form :key="link.id" v-for="(link, index) in links">
-            <a-form-item>
-              <a-button
-                type="primary"
-                icon="download"
-                @click="gotoDownload(link)"
-              >{{ `${index}-${getTypeName(link.type)}` }}</a-button
-              >
-            </a-form-item>
-          </a-form>
+          <div :key="link.id" v-for="(link, index) in links">
+                <a-button
+                  @click="showConfirm"
+                  type="primary"
+                  size="large"
+                >{{ getButtonText(link) }}
+                </a-button>
+                <a-modal
+                  title="声明"
+                  :visible="confirmVisible"
+                  :confirmLoading="confirmLoading"
+                  @ok="confirmOk(link)"
+                  @cancel="confirmCancel"
+                  okText="继续"
+                  cancelText="返回"
+                >
+                  <p>{{confirmMsg}}</p>
+                </a-modal>
+          </div>
         </div>
         <div v-else>
           <a-form :form="form" @submit="fetchBookLink">
             <a-divider type="horizontal" orientation="left">步骤一</a-divider>
-            <p>长按关注《极客学舍》</p>
+            <p>微信关注《极客学舍》</p>
             <img
               src="../../assets/qrcode.jpg"
               alt="welcome"
               style="height: 128px;width: 128px;"
             />
             <a-divider type="horizontal" orientation="left">步骤二</a-divider>
-            <p>回复关键字:'验证码'，得到下载码</p>
+            <p>回复关键字: <b>验证码</b>，得到六位数字验证码</p>
             <a-divider type="horizontal" orientation="left">步骤三</a-divider>
-            <p>填写下载码并提交</p>
-            <a-form-item label="下载密钥" :value="bookCode"
-            ><a-input
+            <p>填写验证码并提交</p>
+            <a-form-item :value="bookCode"
+            ><a-input-search
+              placeholder="填写验证码"
+              @search="fetchBookLink"
+              size="small"
+              style="width: 150px"
               v-decorator="[
-                'code',
-                {
-                  rules: [{ required: true, message: '请输入验证码!' }]
+                'code', {
+                  rules: [{ required: true, message: '请输入微信得到的验证码!' }]
                 }
-              ]"
-            ></a-input
-            ></a-form-item>
-            <a-form-item>
-              <a-button type="primary" @click="fetchBookLink">
-                提交
-              </a-button></a-form-item
-            >
+              ]">
+                <a-button
+                  slot="enterButton"
+                  type="primary"
+                >提交</a-button>
+              </a-input-search>
+            </a-form-item>
           </a-form>
         </div>
       </div>
@@ -61,9 +72,7 @@
   </div>
 </template>
 <script>
-// import AFormItem from 'ant-design-vue/es/form/FormItem'
 export default {
-  // components: { AFormItem },
   props: {
     links: {
       type: Array,
@@ -75,11 +84,69 @@ export default {
   data () {
     return {
       visible: false,
+      confirmVisible: false,
+      confirmLoading: false,
+      confirmMsg: '该资源来着互联网网盘搜索引擎,非本站存储上传,涉及版权问题由您自行承担,点击继续视为认同本约定;否则请返回',
       bookCode: '',
       form: this.$form.createForm(this)
     }
   },
   methods: {
+    showConfirm () {
+      this.confirmVisible = true
+    },
+    confirmCancel () {
+      this.confirmVisible = false
+    },
+    confirmOk (link) {
+      this.confirmLoading = true
+      let withCodeLink
+      if (link.type === 'bd') {
+        withCodeLink = link.secret
+          ? `${link.link}?from=qrcode&passwd=${link.secret}`
+          : `${link.link}?from=qrcode`
+      } else {
+        withCodeLink = link.link
+      }
+      this.confirmLoading = false
+      this.confirmVisible = false
+      this.$copyText(link.secret || link.link).then(
+        () => {
+          if (link.secret) {
+            let tip_msg = this.getTypeName(link.type)+'密码【'+link.secret+'】已复制,可直接粘贴'
+            this.$confirm({
+              title: '提示',
+              content: tip_msg,
+              okText:'知道了',
+              okType: 'danger',
+              cancelText: '没看见',
+              onOk: () => {
+                window.open(withCodeLink, '_blank')
+              }
+            })
+          } else {
+            window.open(withCodeLink, '_blank')
+          }
+        },
+        () => {
+          if (link.secret) {
+            let tip_msg = this.getTypeName(link.type) + '下载密码【' + link.secret + '】复制失败,请手动填写'
+            this.$confirm({
+              title: '提示',
+              content: tip_msg,
+              okText: '知道了',
+              okType: 'primary',
+              cancelText: '没看见',
+              onOk: () => {
+                window.open(withCodeLink, '_blank')
+              }
+            })
+          } else {
+            window.open(withCodeLink, '_blank')
+          }
+        }
+      )
+    },
     onClose () {
       this.visible = false
     },
@@ -89,6 +156,9 @@ export default {
           this.$router.push({ query: { ...this.$route.query, ...values } })
         }
       })
+    },
+    getButtonText (link) {
+      return link.secret ? this.getTypeName(link.type) + ' 密码'+link.secret : this.getTypeName(link.type)
     },
     getTypeName (type) {
       let name
@@ -101,31 +171,6 @@ export default {
       }
       return name
     },
-    gotoDownload (link) {
-      let withCodeLink
-      if (link.type === 'bd') {
-        withCodeLink = link.secret
-          ? `${link.link}?from=qrcode&passwd=${link.secret}`
-          : `${link.link}?from=qrcode`
-      } else {
-        withCodeLink = link.link
-      }
-      this.$copyText(link.secret || link.link).then(
-        function () {
-          let msg =
-            '该资源来着互联网网盘搜索引擎,非本站存储上传,涉及版权问题由您自行承担,点击确认视为认同本约定;否则请返回'
-          if (link.secret) {
-            msg = '下载密码已复制到剪切板\n' + msg
-          }
-          alert(msg)
-          window.open(withCodeLink, '_blank')
-        },
-        function () {
-          alert('复制失败,请重试')
-          window.open(withCodeLink, '_blank')
-        }
-      )
-    }
   }
 }
 </script>
