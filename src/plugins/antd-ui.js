@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueClipboard from 'vue-clipboard2'
+
 import {
   Icon,
   Button,
@@ -18,10 +19,13 @@ import {
   Breadcrumb,
   Badge,
   Divider,
-  Form
+  Form,
+  Rate,
+  DatePicker,
+  Tag
 } from 'ant-design-vue'
 const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1232880_rtic4lfgpm.js'
+  scriptUrl: '//at.alicdn.com/t/font_1232880_mi1euytchp7.js'
 })
 
 Vue.component('icon-font', IconFont)
@@ -45,5 +49,7 @@ Vue.use(Icon)
 Vue.use(Popconfirm)
 Vue.use(Modal)
 Vue.use(message)
-
+Vue.use(Tag)
+Vue.use(Rate)
+Vue.use(DatePicker)
 Vue.prototype.$confirm = Modal.confirm

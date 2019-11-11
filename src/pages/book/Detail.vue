@@ -1,7 +1,7 @@
 <template>
   <div class="style-detail">
     <div>
-      <BookDownloadDrawer :links="book.links" />
+      <BookDownloadDrawer :links="book.links" source-type="book"/>
       <a-card
         hoverable
         key="qrcode"

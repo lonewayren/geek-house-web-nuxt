@@ -15,18 +15,19 @@
       </template>
       <div>
         <div v-if="links.length">
-          <div :key="link.id" v-for="(link, index) in links">
+          <div :key="index" v-for="(link, index) in links">
                 <a-button
-                  @click="showConfirm"
+                  @click="showConfirm(link)"
                   type="primary"
                   size="large"
+                  style="margin: 5px 0 5px 0"
                 >{{ getButtonText(link) }}
                 </a-button>
                 <a-modal
                   title="声明"
                   :visible="confirmVisible"
                   :confirmLoading="confirmLoading"
-                  @ok="confirmOk(link)"
+                  @ok="confirmOk"
                   @cancel="confirmCancel"
                   okText="继续"
                   cancelText="返回"
@@ -79,7 +80,13 @@ export default {
       default: function () {
         return []
       }
-    }
+    },
+    sourceType: {
+      type: String,
+      default: function () {
+        return 'book'
+      }
+    },
   },
   data () {
     return {
@@ -92,13 +99,16 @@ export default {
     }
   },
   methods: {
-    showConfirm () {
+    showConfirm (link) {
+      this.link = link
       this.confirmVisible = true
     },
     confirmCancel () {
       this.confirmVisible = false
     },
-    confirmOk (link) {
+    confirmOk () {
+      let link = this.link
+      console.log(link.definition)
       this.confirmLoading = true
       let withCodeLink
       if (link.type === 'bd') {
@@ -112,40 +122,55 @@ export default {
       this.confirmVisible = false
       this.$copyText(link.secret || link.link).then(
         () => {
-          if (link.secret) {
-            let tip_msg = this.getTypeName(link.type)+'密码【'+link.secret+'】已复制,可直接粘贴'
-            this.$confirm({
-              title: '提示',
-              content: tip_msg,
-              okText:'知道了',
-              okType: 'danger',
-              cancelText: '没看见',
-              onOk: () => {
-                window.open(withCodeLink, '_blank')
-              }
-            })
-          } else {
-            window.open(withCodeLink, '_blank')
-          }
-        },
-        () => {
-          if (link.secret) {
-            let tip_msg = this.getTypeName(link.type) + '下载密码【' + link.secret + '】复制失败,请手动填写'
-            this.$confirm({
-              title: '提示',
-              content: tip_msg,
-              okText: '知道了',
-              okType: 'primary',
-              cancelText: '没看见',
-              onOk: () => {
-                window.open(withCodeLink, '_blank')
-              }
-            })
-          } else {
-            window.open(withCodeLink, '_blank')
+          if (this.sourceType === 'book') {
+            if (link.secret) {
+              let tip_msg = this.getCopyTip(link, 'success')
+              this.$confirm({
+                title: '提示',
+                content: tip_msg,
+                okText:'知道了',
+                okType: 'danger',
+                cancelText: '没看见',
+                onOk: () => {
+                  window.open(withCodeLink, '_blank')
+                }
+              })
+            } else {
+              window.open(withCodeLink, '_blank')
+            }
+          } else if (this.sourceType === 'movie') {
+            if (link.type === 'xl') {
+              let tip_msg = this.getCopyTip(link, 'success')
+              this.$confirm({
+                title: '提示',
+                content: tip_msg,
+                okText:'知道了',
+                okType: 'danger',
+                cancelText: '没看见',
+              })
+            } else if (link.type === 'zx') {
+              window.open(withCodeLink, '_blank')
+            }
           }
         }
       )
+    },
+    getCopyTip (link, result) {
+      let tip_msg
+      if (this.sourceType === 'book') {
+        if (result === 'success') {
+          tip_msg = this.getTypeName(link.type)+'密码【'+link.secret+'】已复制,可直接粘贴'
+        } else {
+          tip_msg = this.getTypeName(link.type) + '下载密码【' + link.secret + '】复制失败,请手动填写'
+        }
+      } else if (this.sourceType === 'movie') {
+        if (result === 'success') {
+          tip_msg = this.getTypeName(link.type)+' 地址【'+link.link+'】已复制,可直接粘贴'
+        } else {
+          tip_msg = this.getTypeName(link.type) + ' 地址【' + link.link + '】复制失败,请手动填写'
+        }
+      }
+      return tip_msg
     },
     onClose () {
       this.visible = false
@@ -158,7 +183,11 @@ export default {
       })
     },
     getButtonText (link) {
-      return link.secret ? this.getTypeName(link.type) + ' 密码'+link.secret : this.getTypeName(link.type)
+      if (this.sourceType === "book") {
+        return link.secret ? this.getTypeName(link.type) + ' 密码'+link.secret : this.getTypeName(link.type)
+      } else if (this.sourceType === "movie") {
+        return this.getTypeName(link.type) + ' ' + this.getDefinitionName(link.definition)
+      }
     },
     getTypeName (type) {
       let name
@@ -168,9 +197,28 @@ export default {
         name = '腾讯微云'
       } else if (type === 'ty') {
         name = '天翼网盘'
+      } else if (type === 'xl') {
+        name = '迅雷下载'
+      } else if (type === 'zx') {
+        name = '在线播放'
       }
       return name
     },
+    getDefinitionName (definition) {
+      let name
+      if (definition === 'sm') {
+        name = '小屏'
+      } else if (definition === 'lg') {
+        name = '大屏'
+      } else if (definition === 'hd') {
+        name = '平板'
+      } else if (definition === '4k') {
+        name = '高清'
+      } else if (definition === 'yb') {
+        name = '云播'
+      }
+      return name
+    }
   }
 }
 </script>

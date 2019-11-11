@@ -13,14 +13,18 @@
           <icon-font title="icon-ebook" type="icon-ebook" style="font-size: 20px"></icon-font>
           书籍
         </a-menu-item>
+        <a-menu-item key="movie">
+          <icon-font title="icon-movie" type="icon-movie" style="font-size: 20px"></icon-font>
+          电影
+        </a-menu-item>
         <a-menu-item key="school">
           <icon-font title="icon-school" type="icon-school" style="font-size: 20px"></icon-font>
-          校招
+          招聘
         </a-menu-item>
-        <a-menu-item key="society">
-          <icon-font title="icon-society" type="icon-society" style="font-size: 20px"></icon-font>
-          社招
-        </a-menu-item>
+<!--        <a-menu-item key="society">-->
+<!--          <icon-font title="icon-society" type="icon-society" style="font-size: 20px"></icon-font>-->
+<!--          社招-->
+<!--        </a-menu-item>-->
       </a-menu>
     </a-layout-header>
   </a-layout>
